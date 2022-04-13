@@ -21,9 +21,9 @@ class HttpServices {
     }
   }
 
-  Future<List<dynamic>> getUpcoming() async{
+  Future<List<dynamic>> getUpcoming(String link) async{
 
-    Response res = await get(Uri.parse(Constants.upComing));
+    Response res = await get(Uri.parse(link));
 
     if(res.statusCode==200){
       final decoded = jsonDecode(res.body);

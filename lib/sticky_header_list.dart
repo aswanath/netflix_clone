@@ -115,7 +115,7 @@ class StickyHeaderGrid extends StatelessWidget {
               const SizedBox(
                 height: 5,
               ),
-              customText(color: Colors.grey, text: list[index].overview),
+              Text(list[index].overview,style: GoogleFonts.abel(color: Colors.grey),),
               const SizedBox(
                 height: 5,
               ),
@@ -201,55 +201,3 @@ class StickyHeaderGrid extends StatelessWidget {
   }
 }
 
-// class _SideHeader extends StatelessWidget {
-//   const _SideHeader({
-//     Key? key,
-//     this.index,
-//   }) : super(key: key);
-//
-//   final int? index;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-//       child: Align(
-//         alignment: Alignment.centerLeft,
-//         child: SizedBox(
-//           height: 44.0,
-//           width: 44.0,
-//           child: CircleAvatar(
-//             backgroundColor: Colors.orangeAccent,
-//             foregroundColor: Colors.white,
-//             child: Text('$index'),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class AppScaffold extends StatelessWidget {
-//   const AppScaffold({
-//     Key? key,
-//     required this.title,
-//     required this.slivers,
-//     this.reverse = false,
-//   }) : super(key: key);
-//
-//   final String title;
-//   final List<Widget> slivers;
-//   final bool reverse;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return DefaultStickyHeaderController(
-//       child: Scaffold(
-//         body: CustomScrollView(
-//           slivers: slivers,
-//           reverse: reverse,
-//         ),
-//       ),
-//     );
-//   }
-// }

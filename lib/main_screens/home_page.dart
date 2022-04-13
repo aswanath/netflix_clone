@@ -1,20 +1,17 @@
-import 'dart:convert';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:netflix_clone/custom_widgets/appbar_profile_cusotm.dart';
 import 'package:netflix_clone/custom_widgets/category_name_custom.dart';
-import 'package:netflix_clone/custom_widgets/shimmer_custom.dart';
 import 'package:netflix_clone/services/constant_values.dart';
 import 'package:netflix_clone/services/http_services.dart';
-import 'package:netflix_clone/services/model_tmdb.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../custom_widgets/custom_text.dart';
 import '../custom_widgets/icon_and_text.dart';
+import '../custom_widgets/list_view_custom.dart';
 import '../custom_widgets/shimmer_replacement_loading.dart';
 import '../global_usage_variables.dart';
-import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -25,7 +22,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   HttpServices httpServices = HttpServices();
-
+   bool isChanged = false;
 
   @override
   Widget build(BuildContext context) {
@@ -64,26 +61,82 @@ class _HomePageState extends State<HomePage> {
                           const SizedBox(
                             height: 15,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          isChanged?Row(
                             children: [
-                              customText(text: 'Series', size: 16),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 5),
-                                child: customText(text: 'Films', size: 16),
+                              const SizedBox(width: 10,),
+                              GestureDetector(
+                                onTap: (){
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return ListViewCustom(isCategory: false,);
+                                      });
+                                },
+                                child: Row(
+                                  children: [
+                                    customText(text: 'Movies', size: 18,weight: FontWeight.bold),
+                                    const Icon(
+                                      Icons.arrow_drop_down,
+                                      color: commonWhite,
+                                    ),
+                                  ],
+                                ),
                               ),
-                              Row(
-                                children: [
-                                  customText(text: 'Categories', size: 16),
-                                  const Icon(
-                                    Icons.arrow_drop_down,
-                                    color: commonWhite,
-                                  )
-                                ],
+                              const SizedBox(width: 5,),
+                              GestureDetector(
+                                onTap: (){
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return ListViewCustom(isCategory: true,);
+                                      });
+                                },
+                                child: Row(
+                                  children: [
+                                    customText(text: 'All categories',size: 14),
+                                    const Icon(
+                                      Icons.arrow_drop_down,
+                                      color: commonWhite,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           )
+                              :Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: customText(text: 'TV Shows', size: 16),
+                              ),
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    isChanged = true;
+                                  });
+                                },
+                                  child: customText(text: 'Movies', size: 16)),
+                              GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return ListViewCustom(isCategory: true,);
+                                      });
+                                },
+                                child: Row(
+                                  children: [
+                                    customText(text: 'Categories', size: 16),
+                                    const Icon(
+                                      Icons.arrow_drop_down,
+                                      color: commonWhite,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     )
@@ -99,8 +152,7 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           SizedBox(
                             child: Image.network(
-                              '${Constants.imageId}${snapshot.data[7]
-                                  .imageLink}',
+                              '${Constants.imageId}${snapshot.data[7].imageLink}',
                               fit: BoxFit.fill,
                             ),
                             height: 450,
@@ -120,8 +172,8 @@ class _HomePageState extends State<HomePage> {
                                     horizontal: 9, vertical: 3),
                                 decoration: const BoxDecoration(
                                     color: commonWhite,
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(3))),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(3))),
                                 child: Row(
                                   children: [
                                     const Icon(Icons.play_arrow),
@@ -150,8 +202,8 @@ class _HomePageState extends State<HomePage> {
                       height: 170,
                       child: FutureBuilder(
                         future: httpServices.getTopRated(Constants.topRated),
-                        builder: (BuildContext context, AsyncSnapshot<List<
-                            dynamic>> snapshot) {
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<dynamic>> snapshot) {
                           if (snapshot.hasData) {
                             List<dynamic> list = snapshot.data!;
                             return ListView.builder(
@@ -167,8 +219,7 @@ class _HomePageState extends State<HomePage> {
                                     child: SizedBox(
                                       width: 100,
                                       child: Image.network(
-                                        '${Constants.imageId}${list[index]
-                                            .imageLink}',
+                                        '${Constants.imageId}${list[index].imageLink}',
                                         fit: BoxFit.fill,
                                       ),
                                     ),
@@ -187,8 +238,8 @@ class _HomePageState extends State<HomePage> {
                       height: 184,
                       width: double.infinity,
                       child: FutureBuilder(
-                          future: httpServices.getTopRated(
-                              Constants.continueWatching),
+                          future: httpServices
+                              .getTopRated(Constants.continueWatching),
                           builder: (BuildContext context,
                               AsyncSnapshot<dynamic> snapshot) {
                             if (snapshot.hasData) {
@@ -211,9 +262,7 @@ class _HomePageState extends State<HomePage> {
                                                 height: 150,
                                                 width: 100,
                                                 child: Image.network(
-                                                  '${Constants
-                                                      .imageId}${list[index]
-                                                      .imageLink}',
+                                                  '${Constants.imageId}${list[index].imageLink}',
                                                   fit: BoxFit.fill,
                                                 ),
                                               ),
@@ -221,18 +270,18 @@ class _HomePageState extends State<HomePage> {
                                                 height: 150,
                                                 width: 100,
                                                 child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment
-                                                      .end,
-                                                  crossAxisAlignment: CrossAxisAlignment
-                                                      .center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
                                                   children: [
                                                     Container(
                                                       decoration: BoxDecoration(
-                                                          border:
-                                                          Border.all(
-                                                              color: commonWhite),
-                                                          shape: BoxShape
-                                                              .circle,
+                                                          border: Border.all(
+                                                              color:
+                                                                  commonWhite),
+                                                          shape:
+                                                              BoxShape.circle,
                                                           color: Colors.black
                                                               .withOpacity(.5)),
                                                       child: const Icon(
@@ -245,8 +294,8 @@ class _HomePageState extends State<HomePage> {
                                                       height: 25,
                                                     ),
                                                     customText(
-                                                        text: 'S${index +
-                                                            1} : E${index * 2}',
+                                                        text:
+                                                            'S${index + 1} : E${index * 2}',
                                                         size: 10,
                                                         weight: FontWeight.bold)
                                                   ],
@@ -259,9 +308,9 @@ class _HomePageState extends State<HomePage> {
                                             height: 4,
                                             child: LinearProgressIndicator(
                                               value: randomNumber(),
-                                              valueColor: const AlwaysStoppedAnimation<
-                                                  Color>(
-                                                  Colors.red),
+                                              valueColor:
+                                                  const AlwaysStoppedAnimation<
+                                                      Color>(Colors.red),
                                               backgroundColor: Colors.grey,
                                             ),
                                           ),
@@ -274,7 +323,8 @@ class _HomePageState extends State<HomePage> {
                                                   left: 3),
                                               child: Row(
                                                 mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: const [
                                                   Icon(
                                                     Icons.info_outline,
@@ -297,8 +347,7 @@ class _HomePageState extends State<HomePage> {
                             } else {
                               return Container();
                             }
-                          }
-                      ),
+                          }),
                     ),
                     const CategoryHeading(text: 'Popular on Netflix'),
                     SizedBox(
@@ -322,8 +371,7 @@ class _HomePageState extends State<HomePage> {
                                       child: SizedBox(
                                         width: 100,
                                         child: Image.network(
-                                          '${Constants.imageId}${list[index]
-                                              .imageLink}',
+                                          '${Constants.imageId}${list[index].imageLink}',
                                           fit: BoxFit.fill,
                                         ),
                                       ),
@@ -334,8 +382,7 @@ class _HomePageState extends State<HomePage> {
                             } else {
                               return Container();
                             }
-                          }
-                      ),
+                          }),
                     ),
                     const CategoryHeading(text: 'Only on Netflix'),
                     SizedBox(
@@ -359,8 +406,7 @@ class _HomePageState extends State<HomePage> {
                                       child: SizedBox(
                                         width: 160,
                                         child: Image.network(
-                                          '${Constants.imageId}${list[index]
-                                              .imageLink}',
+                                          '${Constants.imageId}${list[index].imageLink}',
                                           fit: BoxFit.fill,
                                         ),
                                       ),
@@ -371,8 +417,7 @@ class _HomePageState extends State<HomePage> {
                             } else {
                               return Container();
                             }
-                          }
-                      ),
+                          }),
                     ),
                     const CategoryHeading(text: 'Top 10 in India Today'),
                     SizedBox(
@@ -396,13 +441,12 @@ class _HomePageState extends State<HomePage> {
                                       alignment: Alignment.centerRight,
                                       children: [
                                         ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                              5),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
                                           child: SizedBox(
                                             width: 110,
                                             child: Image.network(
-                                              '${Constants.imageId}${list[index]
-                                                  .imageLink}',
+                                              '${Constants.imageId}${list[index].imageLink}',
                                               fit: BoxFit.fill,
                                             ),
                                           ),
@@ -417,17 +461,18 @@ class _HomePageState extends State<HomePage> {
                                                 style: TextStyle(
                                                     fontSize: 100,
                                                     foreground: Paint()
-                                                      ..style = PaintingStyle
-                                                          .stroke
+                                                      ..style =
+                                                          PaintingStyle.stroke
                                                       ..strokeWidth = 7
-                                                      ..color = commonWhite
-                                                ),
+                                                      ..color = commonWhite),
                                               ),
-                                              Text('${index + 1}',
+                                              Text(
+                                                '${index + 1}',
                                                 style: const TextStyle(
                                                     fontSize: 100,
-                                                    fontWeight: FontWeight.w900
-                                                ),)
+                                                    fontWeight:
+                                                        FontWeight.w900),
+                                              )
                                             ],
                                           ),
                                         )
@@ -439,18 +484,15 @@ class _HomePageState extends State<HomePage> {
                             } else {
                               return Container();
                             }
-                          }
-                      ),
+                          }),
                     ),
                   ],
                 ),
               );
+            } else {
+              return const ShimmerReplacement();
             }
-            else {
-              return ShimmerReplacement();
-          }
-          }
-      ),
+          }),
     );
   }
 

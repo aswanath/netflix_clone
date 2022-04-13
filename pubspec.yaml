@@ -41,6 +41,12 @@ dependencies:
   flutter_sticky_header: ^0.6.1
   http: ^0.13.4
   shimmer: ^2.0.0
+  video_player: ^2.3.0
+  scrollable_list_tabview:
+    git:
+      url: https://github.com/aswanath/scrollable_list_tabview_custom.git
+      ref: master # branch name
+
 
 dev_dependencies:
   flutter_test:
